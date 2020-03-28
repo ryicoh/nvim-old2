@@ -17,6 +17,8 @@ call plug#begin('~/.config/nvim/plugins')
     Plug 'neoclide/coc.nvim', {'branch': 'release'}
     Plug 'tpope/vim-fugitive'
     Plug 'airblade/vim-gitgutter'
+    Plug 'kylef/apiblueprint.vim'
+    Plug 'scrooloose/syntastic'
 call plug#end()
 
 
@@ -51,6 +53,10 @@ set shortmess+=c
 set signcolumn=yes
 
 set number
+
+set tabstop=4
+set expandtab
+set shiftwidth=4
 
 " Use tab for trigger completion with characters ahead and navigate.
 " NOTE: Use command ':verbose imap <tab>' to make sure tab is not mapped by
@@ -227,3 +233,4 @@ map <silent> <space>[ :<C-u>tabprevious<CR>
 nnoremap <space>u :<C-u>GitGutterUndoHunk<CR>
 nnoremap <space>n :<C-u>GitGutterNextHunk<CR>
 nnoremap <space>p :<C-u>GitGutterPrevHunk<CR>
+

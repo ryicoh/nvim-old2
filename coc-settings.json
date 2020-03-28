@@ -1,4 +1,6 @@
 {
+	"python.formatting.provider": "black",
+	"coc.preferences.formatOnSaveFiletypes": ["python", "vue"],
 	"languageserver": {
 		"dockerfile": {
 			"command": "docker-langserver",
