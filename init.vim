@@ -20,6 +20,7 @@ call plug#begin('~/.config/nvim/plugins')
     Plug 'kylef/apiblueprint.vim'
     Plug 'scrooloose/syntastic'
     Plug 'simeji/winresizer'
+    Plug 'tpope/vim-rhubarb'
 call plug#end()
 
 
@@ -30,6 +31,9 @@ colorscheme gruvbox
 
 set nocompatible
 
+"command-line completion
+set wildmenu
+set wildmode=list:longest
 
 set encoding=utf-8
 set fileencodings=utf-8
@@ -104,7 +108,7 @@ nmap <silent> gr <Plug>(coc-references)
 autocmd CursorHold * silent call CocActionAsync('highlight')
 
 " Symbol renaming.
-nmap <leader>r <Plug>(coc-rename)
+nmap <leader>rn <Plug>(coc-rename)
 
 " Formatting selected code.
 " xmap <leader>f  <Plug>(coc-format-selected)
@@ -221,6 +225,12 @@ command! -bang -nargs=? -complete=dir Buffers
 command! -bang -nargs=? History
     \ call fzf#vim#history({'options': fzf_custom_options}, <bang>)
 
+command! -bang -nargs=? SearchHistory
+    \ call fzf#vim#search_history({'options': fzf_custom_options}, <bang>)
+
+command! -bang -nargs=? CommandHistory
+    \ call fzf#vim#command_history({'options': fzf_custom_options}, <bang>)
+
 command! -bang -nargs=* Rg
   \ call fzf#vim#grep(
   \   'rg --column --line-number --no-heading --color=always --smart-case '.shellescape(<q-args>), 1,
@@ -239,23 +249,28 @@ let g:fzf_history_dir = '~/.local/share/fzf-history'
 command! -nargs=* -bang RG call RipgrepFzf(<q-args>, <bang>0)
 
 nnoremap <silent> <space>f :<C-u>Files<CR>
-nnoremap <silent> <C-p>  :<C-u>Files<cr>
+nnoremap <silent> <C-p>    :<C-u>Files<cr>
 nnoremap <silent> <space>h :<C-u>History<CR>
-nnoremap <silent> <CR><CR> :<C-u>History<CR>
 nnoremap <silent> <space>r :<C-u>Rg<CR>
-nnoremap <silent> <space>b :<C-u>Buffers<CR>
-nnoremap <silent> <space>g  :<C-u>GFiles?<CR>
-nnoremap <silent> <space><space> :<C-u>nohlsearch<CR>
-nnoremap <silent> <space>d :<C-u>Gdiff<CR>
+nnoremap <silent> <space>g :<C-u>GFiles?<CR>
+nnoremap <silent> <space>b :<C-u>GBrowse<CR>
 nnoremap <silent> <space>s :<C-u>Gstatus<CR>
+nnoremap <silent> <space>d :<C-u>Gdiff<CR>
+nnoremap <silent> <C-_>    :<C-u>SearchHistory<CR>
+nnoremap <silent> <space>l :<C-u>BLines<CR>
+nnoremap <silent> <space>L :<C-u>Commits<CR>
+nnoremap <silent> <space>c :<C-u>CommandHistory<CR>
+nnoremap          <space>/ :<C-u>nohlsearch<CR>
+nnoremap <silent> <space>: :<C-u>Commands<CR>
+nnoremap <silent> <space>w :<C-u>Windows<CR>
+nnoremap <silent> <space>m :<C-u>Marks<CR>
 
 nnoremap <silent> <C-n> :<C-u>NERDTreeToggle<CR>
 nnoremap <silent> <leader>n :<C-u>NERDTreeFind<CR>
 
-autocmd FileType go nmap <leader>r <Plug>(go-run-vertical)
+autocmd FileType go nmap <leader>run <Plug>(go-run-vertical)
 autocmd FileType go nmap <leader>t <Plug>(go-test)
-autocmd FileType go nmap <leader>a <Plug>(go-alternate)
-autocmd FileType go nmap <leader>v <Plug>(go-alternate-vertical)
+autocmd FileType go nmap <leader>a <Plug>(go-alternate-vertical)
 autocmd FileType go nmap <leader>d <Plug>(go-diagnostics)
 autocmd FileType go nmap <leader>c <Plug>(go-coverage-browser)
 autocmd FileType go nmap <leader>s <Plug>(go-decls)
@@ -272,11 +287,6 @@ nnoremap <C-j> <C-w>j
 nnoremap <C-h> <C-w>h
 nnoremap <C-k> <C-w>k
 nnoremap <C-l> <C-w>l
-
-nnoremap <space>/ :<C-u>nohlsearch<CR>
-nnoremap <space>: :<C-u>Commands<CR>
-nnoremap <silent> <space>w :<C-u>Windows<CR>
-nnoremap <silent> <space>m :<C-u>Marks<CR>
 
 set clipboard=unnamedplus
 
@@ -295,6 +305,11 @@ map <silent> <space>[ :<C-u>tabprevious<CR>
 nnoremap <space>u :<C-u>GitGutterUndoHunk<CR>
 nnoremap <space>n :<C-u>GitGutterNextHunk<CR>
 nnoremap <space>p :<C-u>GitGutterPrevHunk<CR>
+
+nmap Q :q
+nmap W :w
+nmap WQ :wq
+nmap Wq :wq
 
 " nnoremap <C-w>e :<C-u>WinResizerStartResize<CR>
 
