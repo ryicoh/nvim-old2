@@ -19,6 +19,7 @@ call plug#begin('~/.config/nvim/plugins')
     Plug 'airblade/vim-gitgutter'
     Plug 'kylef/apiblueprint.vim'
     Plug 'scrooloose/syntastic'
+    Plug 'simeji/winresizer'
 call plug#end()
 
 
@@ -28,6 +29,11 @@ colorscheme gruvbox
 " ### Coc
 
 set nocompatible
+
+
+set encoding=utf-8
+set fileencodings=utf-8
+set fileformats=unix,dos,mac
 
 " TextEdit might fail if hidden is not set.
 set hidden
@@ -98,11 +104,11 @@ nmap <silent> gr <Plug>(coc-references)
 autocmd CursorHold * silent call CocActionAsync('highlight')
 
 " Symbol renaming.
-nmap <leader>rn <Plug>(coc-rename)
+nmap <leader>r <Plug>(coc-rename)
 
 " Formatting selected code.
-xmap <leader>f  <Plug>(coc-format-selected)
-nmap <leader>f  <Plug>(coc-format-selected)
+" xmap <leader>f  <Plug>(coc-format-selected)
+" nmap <leader>f  <Plug>(coc-format-selected)
 
 augroup mygroup
   autocmd!
@@ -114,13 +120,13 @@ augroup end
 
 " Applying codeAction to the selected region.
 " Example: `<leader>aap` for current paragraph
-xmap <leader>a  <Plug>(coc-codeaction-selected)
-nmap <leader>a  <Plug>(coc-codeaction-selected)
+" xmap <leader>a  <Plug>(coc-codeaction-selected)
+" nmap <leader>a  <Plug>(coc-codeaction-selected)
 
 " Remap keys for applying codeAction to the current line.
-nmap <leader>ac  <Plug>(coc-codeaction)
+" nmap <leader>ac  <Plug>(coc-codeaction)
 " Apply AutoFix to problem on the current line.
-nmap <leader>qf  <Plug>(coc-fix-current)
+" nmap <leader>qf  <Plug>(coc-fix-current)
 
 " Introduce function text object
 " NOTE: Requires 'textDocument.documentSymbol' support from the language server.
@@ -151,19 +157,19 @@ set statusline^=%{coc#status()}%{get(b:,'coc_current_function','')}
 
 " Mappings using CoCList:
 " Show all diagnostics.
-nnoremap <silent> <space>a  :<C-u>CocList diagnostics<cr>
+" nnoremap <silent> <space>a  :<C-u>CocList diagnostics<cr>
 " Manage extensions.
-nnoremap <silent> <space>e  :<C-u>CocList extensions<cr>
+" nnoremap <silent> <space>e  :<C-u>CocList extensions<cr>
 " Show commands.
-nnoremap <silent> <space>c  :<C-u>CocList commands<cr>
+" nnoremap <silent> <space>c  :<C-u>CocList commands<cr>
 " Find symbol of current document.
-nnoremap <silent> <space>o  :<C-u>CocList outline<cr>
+" nnoremap <silent> <space>o  :<C-u>CocList outline<cr>
 " Search workspace symbols.
-nnoremap <silent> <space>s  :<C-u>CocList -I symbols<cr>
+" nnoremap <silent> <space>s  :<C-u>CocList -I symbols<cr>
 " Do default action for next item.
-nnoremap <silent> <space>j  :<C-u>CocNext<CR>
+" nnoremap <silent> <space>j  :<C-u>CocNext<CR>
 " Do default action for previous item.
-nnoremap <silent> <space>k  :<C-u>CocPrev<CR>
+" nnoremap <silent> <space>k  :<C-u>CocPrev<CR>
 " Resume latest coc list.
 " nnoremap <silent> <space>p  :<C-u>CocListResume<CR>
 
@@ -177,42 +183,100 @@ function! s:GrepArgs(...)
 endfunction
 
 " Keymapping for grep word under cursor with interactive mode
-nnoremap <silent> <Leader>cf :exe 'CocList -I --input='.expand('<cword>').' grep'<CR>
+" nnoremap <silent> <Leader>cf :exe 'CocList -I --input='.expand('<cword>').' grep'<CR>
 
-nnoremap <silent> <space>g  :<C-u>CocList --normal gstatus<CR>
+" nnoremap <silent> <space>g  :<C-u>CocList --normal gstatus<CR>
 
-nnoremap <silent> <space>y  :<C-u>CocList -A --normal yank<cr>
-
-nnoremap <silent> <C-p>  :<C-u>CocList files<cr>
+" nnoremap <silent> <space>y  :<C-u>CocList -A --normal yank<cr>
 
 " ### fzf
+let g:fzf_colors =
+\ { 'fg':      ['fg', 'Normal'],
+  \ 'bg':      ['bg', 'Normal'],
+  \ 'hl':      ['fg', 'Comment'],
+  \ 'fg+':     ['fg', 'CursorLine', 'CursorColumn', 'Normal'],
+  \ 'bg+':     ['bg', 'CursorLine', 'CursorColumn'],
+  \ 'hl+':     ['fg', 'Statement'],
+  \ 'info':    ['fg', 'PreProc'],
+  \ 'border':  ['fg', 'Ignore'],
+  \ 'prompt':  ['fg', 'Conditional'],
+  \ 'pointer': ['fg', 'Exception'],
+  \ 'marker':  ['fg', 'Keyword'],
+  \ 'spinner': ['fg', 'Label'],
+  \ 'header':  ['fg', 'Comment'] }
+
+let g:previewShell = "$HOME/.config/nvim/plugins/fzf.vim/bin/preview.sh"
+let $FZF_DEFAULT_OPTS = "--layout=reverse --info=inline --bind ctrl-b:page-up,ctrl-f:page-down,ctrl-u:up+up+up,ctrl-d:down+down+down"
+let g:fzf_custom_options = ['--preview', previewShell.' {}']
+
+command! -bang -nargs=? -complete=dir Files
+    \ call fzf#vim#files(<q-args>, {'options': fzf_custom_options}, <bang>)
+
+command! -bang -nargs=? -complete=dir GFiles
+    \ call fzf#vim#gitfiles(<q-args>, {'options': fzf_custom_options}, <bang>)
+
+command! -bang -nargs=? -complete=dir Buffers
+    \ call fzf#vim#buffers({'options': fzf_custom_options}, <bang>)
+
 command! -bang -nargs=? History
-    \ call fzf#vim#history({'options': ['--layout=reverse', '--info=inline', '--preview', '~/.vim/plugged/fzf.vim/bin/preview.sh {}']}, <bang>)
+    \ call fzf#vim#history({'options': fzf_custom_options}, <bang>)
 
 command! -bang -nargs=* Rg
   \ call fzf#vim#grep(
   \   'rg --column --line-number --no-heading --color=always --smart-case '.shellescape(<q-args>), 1,
   \   fzf#vim#with_preview(), <bang>0)
 
+function! RipgrepFzf(query, fullscreen)
+  let command_fmt = 'rg --column --line-number --no-heading --color=always --smart-case -- %s || true'
+  let initial_command = printf(command_fmt, shellescape(a:query))
+  let reload_command = printf(command_fmt, '{q}')
+  let spec = {'options': ['--phony', '--query', a:query, '--bind', 'change:reload:'.reload_command]}
+  call fzf#vim#grep(initial_command, 1, fzf#vim#with_preview(spec), a:fullscreen)
+endfunction
+
+let g:fzf_history_dir = '~/.local/share/fzf-history'
+
+command! -nargs=* -bang RG call RipgrepFzf(<q-args>, <bang>0)
+
+nnoremap <silent> <space>f :<C-u>Files<CR>
+nnoremap <silent> <C-p>  :<C-u>Files<cr>
+nnoremap <silent> <space>h :<C-u>History<CR>
 nnoremap <silent> <CR><CR> :<C-u>History<CR>
-nnoremap <silent> <C-f> :<C-u>Rg<CR>
+nnoremap <silent> <space>r :<C-u>Rg<CR>
+nnoremap <silent> <space>b :<C-u>Buffers<CR>
+nnoremap <silent> <space>g  :<C-u>GFiles?<CR>
+nnoremap <silent> <space><space> :<C-u>nohlsearch<CR>
+nnoremap <silent> <space>d :<C-u>Gdiff<CR>
+nnoremap <silent> <space>s :<C-u>Gstatus<CR>
 
 nnoremap <silent> <C-n> :<C-u>NERDTreeToggle<CR>
-nnoremap <silent> <C-b> :<C-u>NERDTreeFind<CR>
+nnoremap <silent> <leader>n :<C-u>NERDTreeFind<CR>
 
-autocmd FileType go nmap <leader>t  <Plug>(go-test)
+autocmd FileType go nmap <leader>r <Plug>(go-run-vertical)
+autocmd FileType go nmap <leader>t <Plug>(go-test)
+autocmd FileType go nmap <leader>a <Plug>(go-alternate)
+autocmd FileType go nmap <leader>v <Plug>(go-alternate-vertical)
+autocmd FileType go nmap <leader>d <Plug>(go-diagnostics)
+autocmd FileType go nmap <leader>c <Plug>(go-coverage-browser)
+autocmd FileType go nmap <leader>s <Plug>(go-decls)
+autocmd FileType go nmap <leader>f <Plug>(go-decls-dir)
+autocmd FileType go nmap <leader>im :<C-u>GoImpl<CR>
+autocmd FileType go nmap <leader>if <Plug>(go-iferr)
+
 let g:go_fmt_command = "goimports"
 
-
-nnoremap <leader>ev :<C-u>e $MYVIMRC<CR>
-nnoremap <leader>so :<C-u>so $MYVIMRC<CR>
+nnoremap <leader>ve :<C-u>e $MYVIMRC<CR>
+nnoremap <leader>vs :<C-u>so $MYVIMRC<CR>
 
 nnoremap <C-j> <C-w>j
 nnoremap <C-h> <C-w>h
 nnoremap <C-k> <C-w>k
 nnoremap <C-l> <C-w>l
 
-nnoremap <ESC><ESC> :<C-u>nohlsearch<CR>
+nnoremap <space>/ :<C-u>nohlsearch<CR>
+nnoremap <space>: :<C-u>Commands<CR>
+nnoremap <silent> <space>w :<C-u>Windows<CR>
+nnoremap <silent> <space>m :<C-u>Marks<CR>
 
 set clipboard=unnamedplus
 
@@ -221,10 +285,8 @@ for n in range(1, 9)
 endfor
 " t1 で1番左のタブ、t2 で1番左から2番目のタブにジャンプ
 
-map <silent> <space>c :<C-u>tablast <bar> tabnew<CR>
+map <silent> <space>t :<C-u>tablast <bar> tabnew<CR>
 " tc 新しいタブを一番右に作る
-map <silent> <space>w :<C-u>tabclose<CR>
-" tx タブを閉じる
 map <silent> <space>] :<C-u>tabnext<CR>
 " tn 次のタブ
 map <silent> <space>[ :<C-u>tabprevious<CR>
@@ -234,3 +296,6 @@ nnoremap <space>u :<C-u>GitGutterUndoHunk<CR>
 nnoremap <space>n :<C-u>GitGutterNextHunk<CR>
 nnoremap <space>p :<C-u>GitGutterPrevHunk<CR>
 
+" nnoremap <C-w>e :<C-u>WinResizerStartResize<CR>
+
+let g:winresizer_start_key = "<C-w>e"
