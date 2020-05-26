@@ -13,6 +13,7 @@ call plug#begin('~/.config/nvim/plugins')
     Plug 'junegunn/fzf'
     Plug 'junegunn/fzf.vim'
     Plug 'fatih/vim-go'
+    Plug 'SirVer/ultisnips'
     Plug 'morhetz/gruvbox'
     Plug 'neoclide/coc.nvim', {'branch': 'release'}
     Plug 'tpope/vim-fugitive'
@@ -21,8 +22,8 @@ call plug#begin('~/.config/nvim/plugins')
     Plug 'scrooloose/syntastic'
     Plug 'simeji/winresizer'
     Plug 'tpope/vim-rhubarb'
+    Plug 'itchyny/lightline.vim'
 call plug#end()
-
 
 " ### gruvbox
 colorscheme gruvbox
@@ -306,11 +307,28 @@ nnoremap <space>u :<C-u>GitGutterUndoHunk<CR>
 nnoremap <space>n :<C-u>GitGutterNextHunk<CR>
 nnoremap <space>p :<C-u>GitGutterPrevHunk<CR>
 
-nmap Q :q
-nmap W :w
-nmap WQ :wq
-nmap Wq :wq
+command! Q q
+command! W w
+
+cnoremap <C-a> <Home>
+cnoremap <C-e> <End>
+
+cnoremap <C-f> <Right>
+cnoremap <C-b> <Left>
+cnoremap <M-f> <S-Right>
+cnoremap <M-b> <S-Left>
+
+inoremap <C-f> <Right>
+inoremap <C-b> <Left>
+inoremap <M-f> <S-Right>
+inoremap <M-b> <S-Left>
 
 " nnoremap <C-w>e :<C-u>WinResizerStartResize<CR>
 
 let g:winresizer_start_key = "<C-w>e"
+
+let g:UltiSnipsExpandTrigger = "<tab>"
+let g:UltiSnipsJumpForwardTrigger = "<tab>"
+let g:UltiSnipsJumpBackwardTrigger = "<s-tab>"
+
+let g:lightline = { 'colorscheme': 'seoul256' }
