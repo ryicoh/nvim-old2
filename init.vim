@@ -9,33 +9,73 @@ endif
 unlet autoload_plug_path
 
 call plug#begin('~/.config/nvim/plugins')
-    Plug 'preservim/nerdtree'
-    Plug 'junegunn/fzf'
-    Plug 'junegunn/fzf.vim'
-    Plug 'fatih/vim-go'
-    Plug 'SirVer/ultisnips'
-    Plug 'morhetz/gruvbox'
+    " IDE
     Plug 'neoclide/coc.nvim', {'branch': 'release'}
+
+    " ファイラー
+    Plug 'preservim/nerdtree'
+
+    " ファイルごとの<C-o>
+    Plug 'Bakudankun/BackAndForward.vim'
+    " 検索
+    Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
+    Plug 'junegunn/fzf.vim'
+    " リサイザー
+    Plug 'simeji/winresizer'
+    " テーマ
+    Plug 'morhetz/gruvbox'
+    Plug 'itchyny/lightline.vim'
+
+    " Git関連
     Plug 'tpope/vim-fugitive'
     Plug 'airblade/vim-gitgutter'
-    Plug 'kylef/apiblueprint.vim'
-    Plug 'scrooloose/syntastic'
-    Plug 'simeji/winresizer'
     Plug 'tpope/vim-rhubarb'
-    Plug 'itchyny/lightline.vim'
+
+    " APIドキュメント
+    Plug 'kylef/apiblueprint.vim'
+
+    " dartのシンタックスハイライト
+    Plug 'dart-lang/dart-vim-plugin'
+
+    " graphqlのシンタックスハイライト
+    Plug 'jparise/vim-graphql'
+
+    " base64
+    Plug 'christianrondeau/vim-base64'
+
+    " js
+    Plug 'ludovicchabant/vim-gutentags'
+    Plug 'kristijanhusak/vim-js-file-import', {'do': 'npm install'}
+
+    " React
+    Plug 'leafgarland/typescript-vim'
+    Plug 'peitalin/vim-jsx-typescript'
+
+    " Vue
+    Plug 'posva/vim-vue'
+    Plug 'digitaltoad/vim-pug'
+
+    " Go
+    Plug 'fatih/vim-go'
+
+    " 未使用
+    " Plug 'thosakwe/vim-flutter'
+    " Plug 'SirVer/ultisnips'
+    " Plug 'scrooloose/syntastic'
 call plug#end()
 
 " ### gruvbox
 colorscheme gruvbox
 
 " ### Coc
-
 set nocompatible
 
 "command-line completion
 set wildmenu
 set wildmode=list:longest
+set wildignore+=*node_modules/**
 
+" エンコーディング
 set encoding=utf-8
 set fileencodings=utf-8
 set fileformats=unix,dos,mac
@@ -44,7 +84,6 @@ set fileformats=unix,dos,mac
 set hidden
 
 " Some servers have issues with backup files, see #649.
-set nobackup
 set nobackup
 set nowritebackup
 set noswapfile
@@ -69,22 +108,22 @@ set tabstop=4
 set expandtab
 set shiftwidth=4
 
-" Use tab for trigger completion with characters ahead and navigate.
-" NOTE: Use command ':verbose imap <tab>' to make sure tab is not mapped by
-" other plugin before putting this into your config.
+" タブで補完
+function! s:check_back_space() abort
+  let col = col('.') - 1
+  return !col || getline('.')[col - 1]  =~# '\s'
+endfunction
+
 inoremap <silent><expr> <TAB>
       \ pumvisible() ? "\<C-n>" :
       \ <SID>check_back_space() ? "\<TAB>" :
       \ coc#refresh()
 inoremap <expr><S-TAB> pumvisible() ? "\<C-p>" : "\<C-h>"
 
-function! s:check_back_space() abort
-  let col = col('.') - 1
-  return !col || getline('.')[col - 1]  =~# '\s'
-endfunction
-
 " Use <c-space> to trigger completion.
-inoremap <silent><expr> <c-space> coc#refresh()
+nnoremap <silent><expr> <C-a> coc#refresh()
+inoremap <silent><expr> <C-a> coc#refresh()
+nnoremap <space>a :<C-u>CocCommand<CR>
 
 " Use <cr> to confirm completion, `<C-g>u` means break undo chain at current
 " position. Coc only does snippet and additional edit on confirm.
@@ -140,6 +179,8 @@ xmap af <Plug>(coc-funcobj-a)
 omap if <Plug>(coc-funcobj-i)
 omap af <Plug>(coc-funcobj-a)
 
+nnoremap <silent> <space>y  :<C-u>CocList -A --normal yank<cr>
+
 " Use <TAB> for selections ranges.
 " NOTE: Requires 'textDocument/selectionRange' support from the language server.
 " coc-tsserver, coc-python are the examples of servers that support it.
@@ -162,7 +203,7 @@ set statusline^=%{coc#status()}%{get(b:,'coc_current_function','')}
 
 " Mappings using CoCList:
 " Show all diagnostics.
-" nnoremap <silent> <space>a  :<C-u>CocList diagnostics<cr>
+nnoremap <silent> <space>j  :<C-u>CocList diagnostics<cr>
 " Manage extensions.
 " nnoremap <silent> <space>e  :<C-u>CocList extensions<cr>
 " Show commands.
@@ -245,6 +286,8 @@ function! RipgrepFzf(query, fullscreen)
   call fzf#vim#grep(initial_command, 1, fzf#vim#with_preview(spec), a:fullscreen)
 endfunction
 
+nnoremap <space>T :<C-u>Rg TODO:<CR>
+
 let g:fzf_history_dir = '~/.local/share/fzf-history'
 
 command! -nargs=* -bang RG call RipgrepFzf(<q-args>, <bang>0)
@@ -276,13 +319,13 @@ autocmd FileType go nmap <leader>d <Plug>(go-diagnostics)
 autocmd FileType go nmap <leader>c <Plug>(go-coverage-browser)
 autocmd FileType go nmap <leader>s <Plug>(go-decls)
 autocmd FileType go nmap <leader>f <Plug>(go-decls-dir)
-autocmd FileType go nmap <leader>im :<C-u>GoImpl<CR>
-autocmd FileType go nmap <leader>if <Plug>(go-iferr)
+autocmd FileType go nmap <leader>gi :<C-u>GoImpl<CR>
 
 let g:go_fmt_command = "goimports"
 
 nnoremap <leader>ve :<C-u>e $MYVIMRC<CR>
 nnoremap <leader>vs :<C-u>so $MYVIMRC<CR>
+nnoremap <leader>vu :<C-u>CocCommand snippets.editSnippets<CR>
 
 nnoremap <C-j> <C-w>j
 nnoremap <C-h> <C-w>h
@@ -306,7 +349,9 @@ map <silent> <space>[ :<C-u>tabprevious<CR>
 nnoremap <space>u :<C-u>GitGutterUndoHunk<CR>
 nnoremap <space>n :<C-u>GitGutterNextHunk<CR>
 nnoremap <space>p :<C-u>GitGutterPrevHunk<CR>
+nnoremap <space><space> :<C-u>GitGutterStageHunk<CR>
 
+map Q <Nop>
 command! Q q
 command! W w
 
@@ -327,8 +372,33 @@ inoremap <M-b> <S-Left>
 
 let g:winresizer_start_key = "<C-w>e"
 
-let g:UltiSnipsExpandTrigger = "<tab>"
-let g:UltiSnipsJumpForwardTrigger = "<tab>"
-let g:UltiSnipsJumpBackwardTrigger = "<s-tab>"
+"let g:UltiSnipsExpandTrigger = "<tab>"
+"let g:UltiSnipsJumpForwardTrigger = "<tab>"
+"let g:UltiSnipsJumpBackwardTrigger = "<s-tab>"
 
 let g:lightline = { 'colorscheme': 'seoul256' }
+
+let g:dart_format_on_save = 1
+
+inoremap <silent><expr> <TAB>
+      \ pumvisible() ? coc#_select_confirm() :
+      \ coc#expandableOrJumpable() ? "\<C-r>=coc#rpc#request('doKeymap', ['snippets-expand-jump',''])\<CR>" :
+      \ <SID>check_back_space() ? "\<TAB>" :
+      \ coc#refresh()
+
+function! s:check_back_space() abort
+  let col = col('.') - 1
+  return !col || getline('.')[col - 1]  =~# '\s'
+endfunction
+
+let g:coc_snippet_next = '<tab>'
+let g:coc_snippet_prev = '<s-tab>'
+
+nmap g<C-o> :<C-u>Back<CR>
+nmap g<C-i> :<C-u>Forward<CR>
+
+nnoremap z<CR> 5kz<CR>5j
+nnoremap zb 5jzb5k
+nnoremap <C-f> 5k<C-f>5j
+nnoremap <C-b> 5j<C-b>5k
+

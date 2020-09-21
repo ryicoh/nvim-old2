@@ -1,0 +1,12 @@
+let g:netrw_dirhistmax  =10
+let g:netrw_dirhistcnt =6
+let g:netrw_dirhist_6='/Users/ryicoh/workspace/cf-web/frontend/src/components'
+let g:netrw_dirhist_5='/Users/ryicoh/workspace/school-backend-k8smf/prod/templates'
+let g:netrw_dirhist_4='/Users/ryicoh/workspace/school-client/components/Business/Wysiwyg/Light'
+let g:netrw_dirhist_3='/Users/ryicoh/workspace/school-backend/adapter/http/middleware'
+let g:netrw_dirhist_2='/Users/ryicoh/workspace/school-backend-k8smf/dev/templates'
+let g:netrw_dirhist_1='/Users/ryicoh/workspace/cf-web/frontend/src/pages/mypage'
+let g:netrw_dirhist_0='/Users/ryicoh/workspace/school-client'
+let g:netrw_dirhist_9='/Users/ryicoh/workspace/school-client/pages/users'
+let g:netrw_dirhist_8='/Users/ryicoh/workspace/isntshe-app/node_modules/react-native-webview/lib'
+let g:netrw_dirhist_7='/Users/ryicoh/workspace/cf-web/payment/src'

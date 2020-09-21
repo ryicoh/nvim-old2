@@ -1,20 +1,15 @@
 {
     "python.formatting.provider": "black",
-    "coc.preferences.formatOnSaveFiletypes": ["python"],
+    "coc.preferences.formatOnSaveFiletypes": ["python", "dart"],
     "languageserver": {
-        "dockerfile": {
-            "command": "docker-langserver",
-            "filetypes": ["dockerfile"],
-            "args": ["--stdio"]
-        },
-        "sorbet": {
-            "command": "srb",
-            "args": ["tc", "--typed", "true", "--enable-all-experimental-lsp-features", "--lsp", "--disable-watchman", "--dir", "."],
-            "filetypes": ["ruby"],
-            "rootPatterns": ["sorbet/config"],
-            "initializationOptions": {},
-            "settings": {}
-        }
+      "golang": {
+        "command": "gopls",
+        "rootPatterns": ["go.mod"],
+        "filetypes": ["go"]
+      }
+    },
+    "yaml.schemas": {
+      "kubernetes": "/*.yaml"
     },
     "list.normalMappings": {
         "<C-c>": "do:exit"
@@ -24,7 +19,18 @@
     },
     "eslint": {
         "autoFixOnSave": true,
-        "filetypes": ["javascript", "vue"]
+        "filetypes": ["javascript", "vue", "typescript", "typescriptreact", "typescript.tsx"]
     },
-    "tsserver.enable": false
+    "tsserver": {
+        "enable": true
+    },
+    "typescript": {
+        "format": {
+            "enabled": true
+        }
+    },
+    "flutter": {
+      "trace.server": "on",
+      "flutter.lsp.debug": true
+    }
 }
